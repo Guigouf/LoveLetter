@@ -1,0 +1,98 @@
+
+import 'package:flutter/material.dart';
+import 'package:love_letter_flutter/orchestrator/orchestrator.dart';
+
+import '../model/card.dart' as model;
+import '../model/game.dart';
+import '../model/player.dart';
+
+class SelectPlayerWidget extends StatefulWidget {
+
+  final model.Card playedCard;
+  final Orchestrator orchestrator;
+  final List<PlayerToSelect> selectablePlayers = [];
+
+  SelectPlayerWidget(Game game, this.playedCard, this.orchestrator, {super.key
+  }) {
+    for(Player player in game.getSelectablePlayers()) {
+      selectablePlayers.add(PlayerToSelect(player));
+    }
+  }
+
+  @override
+  State<StatefulWidget> createState() => SelectPlayerWidgetState();
+
+}
+
+
+
+class SelectPlayerWidgetState extends State<SelectPlayerWidget> {
+  @override
+  Widget build(BuildContext context) {
+    Size currentSize = MediaQuery
+        .of(context)
+        .size;
+    return Dialog(
+      backgroundColor: Colors.amber,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Wrap(
+        direction: Axis.vertical,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        runAlignment: WrapAlignment.center,
+        spacing: 10,
+        children: [
+          const Text("Selectionner un joueur", style: TextStyle(color: Colors.deepPurple, fontSize: 18)),
+          Wrap(
+              alignment: WrapAlignment.center,
+              spacing: currentSize.width / 25,
+              children: buildPlayersSelection(currentSize.width)
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> buildPlayersSelection(final double currentWidth) {
+    List<Widget> allPlayersWidgets = [];
+    for (PlayerToSelect playerToSelect in widget.selectablePlayers) {
+      MaterialColor color = playerToSelect.isSelected ? Colors.green : Colors
+          .deepPurple;
+      Column playerColumn = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.person, color: color, size: currentWidth / 15),
+          Text(playerToSelect.player.name,
+              style: TextStyle(color: color, fontSize: 10)),
+          const SizedBox(height: 10)
+        ],
+      );
+
+      allPlayersWidgets.add(InkWell(
+          onTap: () {
+            setState(() {
+              if (!playerToSelect.isSelected) {
+                for (PlayerToSelect player in widget.selectablePlayers) {
+                  player.isSelected = false;
+                }
+                playerToSelect.isSelected = true;
+              } else {
+                Navigator.pop(context);
+                widget.orchestrator.playerSelected(playerToSelect.player, widget.playedCard);
+              }
+            });
+          },
+          borderRadius: BorderRadius.circular(10),
+          splashColor: Colors.deepPurple.withAlpha(100),
+          child: playerColumn
+      ));
+    }
+    return allPlayersWidgets;
+  }
+}
+
+class PlayerToSelect {
+  final Player player;
+  bool isSelected = false;
+
+  PlayerToSelect(this.player);
+}
