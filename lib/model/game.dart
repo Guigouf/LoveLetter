@@ -21,10 +21,10 @@ class Game {
     // In case a backward to home page has been done
     _cleanPlayers();
 
-    //_initializeDeck();
+    _initializeDeck();
 
     //For debug
-    _initializeDeckDebug();
+    //_initializeDeckDebug();
 
     _cardDistribution();
 

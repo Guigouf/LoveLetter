@@ -2,9 +2,8 @@ import 'card.dart';
 
 class Player {
 
-  static Player nobody = Player(-1, "NOBODY");
+  static Player nobody = Player("NOBODY");
 
-  int id = -1;
   String name ="";
   bool spyPlayed = false;
   bool handmaidPlayed = false;
@@ -12,7 +11,7 @@ class Player {
   List<Card> playedCards = [];
   bool isSelected = false;
 
-  Player(this.id, this.name);
+  Player(this.name);
 
   void addCard(Card card) {
     cards.add(card);

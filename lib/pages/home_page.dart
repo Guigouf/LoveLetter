@@ -41,7 +41,7 @@ class HomePlayersAddition extends StatefulWidget {
 
 class HomeState extends State<HomePlayersAddition> {
   // Initialization with 2 players
-  List<Player> players = [Player(1, "Joueur 1"), Player(2, "Joueur 2")];
+  List<Player> players = [Player( "Joueur 1"), Player("Joueur 2")];
   int lastUsedId = 2;
 
   @override
@@ -152,7 +152,7 @@ class HomeState extends State<HomePlayersAddition> {
   addPlayer() {
     if (players.length < 6) {
       setState(() {
-        players.add(Player(++lastUsedId, "Joueur $lastUsedId"));
+        players.add(Player("Joueur ${++lastUsedId}"));
       });
     }
   }

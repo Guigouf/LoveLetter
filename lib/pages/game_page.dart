@@ -11,9 +11,14 @@ import '../model/player.dart';
 import '../orchestrator/orchestrator.dart';
 
 class GamePage extends StatelessWidget {
-  final List<Player> players;
+  List<Player> players = [];
 
-  const GamePage(this.players, {super.key});
+  GamePage(List<Player> newPlayers, {super.key}) {
+    // Copy the players list
+    for (final Player player in newPlayers) {
+      players.add(Player(player.name));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
