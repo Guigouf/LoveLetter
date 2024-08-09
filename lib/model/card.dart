@@ -34,7 +34,7 @@ enum CardEnum {
   king(7, "Roi", "images/cards/roi.jpg", "images/cards/roi_selected.jpg"),
   comtess(8, "Comtesse", "images/cards/comtesse.jpg",
       "images/cards/comtesse_selected.jpg"),
-  princess(9, "Princess", "images/cards/princesse.jpg",
+  princess(9, "Princesse", "images/cards/princesse.jpg",
       "images/cards/princesse_selected.jpg");
 
   final int value;

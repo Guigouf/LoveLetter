@@ -2,6 +2,8 @@ import 'card.dart';
 
 class Player {
 
+  static Player nobody = Player(-1, "NOBODY");
+
   int id = -1;
   String name ="";
   bool spyPlayed = false;
@@ -22,8 +24,18 @@ class Player {
   }
 
   void selectCard(Card card) {
-    for (Card card in cards) {card.isSelected = false;}
+    for (Card card in cards) {
+      card.isSelected = false;
+    }
     card.isSelected = true;
+  }
+
+  void reset() {
+    spyPlayed = false;
+    handmaidPlayed = false;
+    cards.clear();
+    playedCards.clear();
+    isSelected = false;
   }
 
 }

@@ -11,11 +11,15 @@ class Game {
   late Card removedCard;
   late Player currentPlayer;
   bool gameEnded = false;
+  GameState state = GameState.gameStarted;
 
   Game(this.allPlayers);
 
   void start() {
     allActivePlayers = allPlayers;
+
+    // In case a backward to home page has been done
+    _cleanPlayers();
 
     //_initializeDeck();
 
@@ -28,6 +32,7 @@ class Game {
     currentPlayer = allActivePlayers.first;
     currentPlayer.addCard(deck.removeAt(0));
 
+    state = GameState.newTurnToConfirm;
   }
 
   void _initializeDeck() {
@@ -76,11 +81,13 @@ class Game {
   }
 
   void _initializeDeckDebug() {
+    deck.add(Card.ofCardEnum(CardEnum.chanceller));
+    deck.add(Card.ofCardEnum(CardEnum.chanceller));
+    deck.add(Card.ofCardEnum(CardEnum.guard));
     deck.add(Card.ofCardEnum(CardEnum.priest));
-    deck.add(Card.ofCardEnum(CardEnum.priest));
-    // 6 Gardes
     deck.add(Card.ofCardEnum(CardEnum.baron));
-    deck.add(Card.ofCardEnum(CardEnum.baron));
+    deck.add(Card.ofCardEnum(CardEnum.handmaid));
+    deck.add(Card.ofCardEnum(CardEnum.princess));
   }
 
   void _cardDistribution() {
@@ -90,10 +97,19 @@ class Game {
   }
 
   void newTurn() {
-    allActivePlayers.removeAt(0);
-    allActivePlayers.add(currentPlayer);
+    // If current player is still alive
+    if (currentPlayer == allActivePlayers[0]) {
+      allActivePlayers.removeAt(0);
+      allActivePlayers.add(currentPlayer);
+
+    }
     currentPlayer = allActivePlayers.first;
     currentPlayer.addCard(deck.removeAt(0));
+    state = GameState.newTurnToConfirm;
+  }
+
+  void startTurn() {
+    state = GameState.newTurnToPlay;
   }
 
   Player getCurrentPlayer() {
@@ -109,7 +125,6 @@ class Game {
     // If already selected, the selection will just be cancelled.
     if (!wasSelected) {
       player.isSelected = !player.isSelected;
-
     }
   }
 
@@ -138,7 +153,7 @@ class Game {
     Player winner = allActivePlayers[0];
     // Else the player with the greatest card
     if (allActivePlayers.length > 1) {
-      for(int i = 1; i < allActivePlayers.length; i++) {
+      for (int i = 1; i < allActivePlayers.length; i++) {
         Player player = allActivePlayers[i];
         if (player.cards[0].value > winner.cards[0].value) {
           winner = player;
@@ -155,4 +170,21 @@ class Game {
   void removePlayer(Player targetPlayer) {
     allActivePlayers.remove(targetPlayer);
   }
+
+  void _cleanPlayers() {
+    for (Player player in allActivePlayers) {
+      player.reset();
+    }
+  }
+
+  void discardCard(Player selectedPlayer) {
+    selectedPlayer.playCard(selectedPlayer.cards.first);
+    if (deck.isNotEmpty) {
+      selectedPlayer.cards.add(deck.removeAt(0));
+    }
+  }
+}
+
+enum GameState {
+  gameStarted, newTurnToConfirm, newTurnToPlay, gameEnded
 }

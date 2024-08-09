@@ -5,6 +5,7 @@ import '../model/card.dart';
 import '../model/game.dart';
 import '../model/player.dart';
 import '../orchestrator/orchestrator.dart';
+import '../pages/app_style.dart';
 
 class SelectCardDialog extends StatefulWidget {
 
@@ -32,6 +33,9 @@ class SelectCardDialog extends StatefulWidget {
 }
 
 class SelectCardDialogState extends State<SelectCardDialog> {
+
+  String selectedCard = "";
+
   @override
   Widget build(BuildContext context) {
     Size currentSize = MediaQuery.of(context).size;
@@ -44,13 +48,19 @@ class SelectCardDialogState extends State<SelectCardDialog> {
         runAlignment: WrapAlignment.center,
         spacing: 20,
         children: [
-          const Text("Selectionner une carte", style: TextStyle(color: Colors.deepPurple, fontSize: 18)),
+          const Text("Selectionner une carte", style: TextStyle(color: Colors.deepPurple, fontSize: 20, fontWeight: FontWeight.bold)),
           Wrap(
               alignment: WrapAlignment.center,
               direction: Axis.vertical,
               spacing: 10,
               children: buildCardWidgets(currentSize.width)
           ),
+          Wrap(
+            alignment: WrapAlignment.center,
+            direction: Axis.vertical,
+            spacing: 5,
+            children: buildTextSelection()
+          )
         ],
       ),
     );
@@ -66,10 +76,11 @@ class SelectCardDialogState extends State<SelectCardDialog> {
 
       for(int j = 0; j <= 2; j++) {
         model.Card card = widget.cards[i + j];
+        double cardWidth = card.isSelected ? currentWidth / 4.9 : currentWidth / 5;
         Widget cardWidget = InkWell(
           child: Image(
               image: AssetImage(card.getImagePath()),
-              width: currentWidth / 4
+              width: cardWidth
           ),
           onTap: () {
             setState(() {
@@ -78,6 +89,7 @@ class SelectCardDialogState extends State<SelectCardDialog> {
                   card.isSelected = false;
                 }
                 card.isSelected = true;
+                selectedCard = card.name;
               } else {
                 Navigator.pop(context);
                 bool isCardGuessRight = widget.game.isCardGuessedRight(
@@ -98,26 +110,23 @@ class SelectCardDialogState extends State<SelectCardDialog> {
                 }
 
                 showDialog(
-                    context: context,
-                    builder: (context) =>
-                        AlertDialog(
-                          title: Text(title, style: const TextStyle(
-                              color: Colors.white)),
-                          backgroundColor: Colors.deepPurple,
-                          actionsAlignment: MainAxisAlignment.center,
-                          content: Text(content, style: const TextStyle(
-                              color: Colors.white)),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context, "OK");
-                                  widget.orchestrator.cardGuessed(
-                                      widget.targetPlayer, isCardGuessRight);
-                                },
-                                child: const Text("OK", style: TextStyle(
-                                    color: Colors.white, fontSize: 20)))
-                          ],
-                        )
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (context) =>
+                      AlertDialog(
+                        title: Text(title, style: const TextStyle(
+                            color: Colors.white)),
+                        backgroundColor: Colors.deepPurple,
+                        actionsAlignment: MainAxisAlignment.center,
+                        content: Text(content, style: const TextStyle(
+                            color: Colors.white)),
+                        actions: [
+                          AppStyle.createOkButton(() {
+                          Navigator.pop(context, "OK");
+                          widget.orchestrator.cardGuessed(widget.targetPlayer, isCardGuessRight);
+                          })
+                        ],
+                      )
                 );
               }
             });
@@ -136,5 +145,32 @@ class SelectCardDialogState extends State<SelectCardDialog> {
     // Add space on the bottum
     cardRows.add(const SizedBox(height: 5));
     return cardRows;
+  }
+
+  List<Widget> buildTextSelection() {
+    List<Widget> texts = [];
+    final String selectedCardName = selectedCard != "" ? selectedCard : "----";
+
+    texts.add(Text("Carte sélectionnée : \n$selectedCardName",
+        style: const TextStyle(color: Colors.deepPurple, fontSize: 20),
+        textAlign: TextAlign.center
+    ));
+    if (selectedCard != "") {
+      texts.add(const Text("Touchez à nouveau pour confirmer",
+          style: TextStyle(color: Colors.deepPurple,
+              fontSize: 12,
+              fontStyle: FontStyle.italic),
+          textAlign: TextAlign.center
+      ));
+    } else {
+      texts.add(const Text("",
+          style: TextStyle(color: Colors.deepPurple,
+              fontSize: 12,
+              fontStyle: FontStyle.italic),
+          textAlign: TextAlign.center
+      ));
+    }
+
+    return texts;
   }
 }

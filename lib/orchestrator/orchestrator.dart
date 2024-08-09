@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:love_letter_flutter/model/player.dart';
 
 import '../pages/game_page.dart';
@@ -45,12 +44,10 @@ class Orchestrator {
         case 3:
         case 5:
         case 7:
-          // TODO
           widgetState.selectPlayerForCard(card);
           break;
         case 6:
-          // TODO
-          endTurn();
+          widgetState.playChanceller();
           break;
       }
     }
@@ -70,37 +67,26 @@ class Orchestrator {
     if(!game.isOver()) {
       game.newTurn();
     } else {
-      // TODO
       widgetState.endGame();
     }
   }
 
-  void playerSelected(Player player, Card playedCard) {
+  void playerSelected(Player selectedPlayer, Card playedCard) {
     switch(playedCard.value) {
       case 1:
-        widgetState.playGuard(player);
+        widgetState.playGuard(selectedPlayer);
         break;
       case 2:
-        // TODO
-        widgetState.playPriest(player);
+        widgetState.playPriest(selectedPlayer);
         break;
       case 3:
-        // TODO
-        widgetState.setState(() {
-          endTurn();
-        });
+        widgetState.playBaron(selectedPlayer);
         break;
       case 5:
-        // TODO
-        widgetState.setState(() {
-          endTurn();
-        });
+        widgetState.playPrince(selectedPlayer);
         break;
       case 7:
-        // TODO
-        widgetState.setState(() {
-          endTurn();
-        });
+        widgetState.playKing(selectedPlayer);
         break;
     }
   }
@@ -110,6 +96,23 @@ class Orchestrator {
       if (isCardGuessRight) {
         game.removePlayer(targetPlayer);
       }
+      endTurn();
+    });
+  }
+
+  void startTurn() {
+    widgetState.setState(() {
+      game.startTurn();
+    });
+  }
+
+  void removePlayer(Player playerToRemove) {
+    game.removePlayer(playerToRemove);
+    endTurn();
+  }
+
+  void endTurnOnState() {
+    widgetState.setState(() {
       endTurn();
     });
   }
