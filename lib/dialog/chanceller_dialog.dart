@@ -44,16 +44,15 @@ class ChancellerDialogState extends State<ChancellerDialog> {
     return Dialog(
         backgroundColor: Colors.amber,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Wrap(
-          direction: Axis.vertical,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          runAlignment: WrapAlignment.center,
-          spacing: currentSize.height / 30,
-          children: [
-            const SizedBox(), // Apply the spacing on top
+        child: Column (
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            SizedBox(height: currentSize.height / 50), // Apply the spacing on top
             Text(title,
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.deepPurple, fontSize: 20, fontWeight: FontWeight.bold)),
+            SizedBox(height: currentSize.height / 30),
             Wrap(
                 alignment: WrapAlignment.center,
                 direction: Axis.horizontal,

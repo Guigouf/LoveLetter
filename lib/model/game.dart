@@ -21,10 +21,10 @@ class Game {
     // In case a backward to home page has been done
     _cleanPlayers();
 
-    _initializeDeck();
+    //_initializeDeck();
 
     //For debug
-    //_initializeDeckDebug();
+    _initializeDeckDebug();
 
     _cardDistribution();
 
@@ -36,6 +36,9 @@ class Game {
   }
 
   void _initializeDeck() {
+    // Clean the deck first
+    deck = [];
+
     // 2 Espionnes
     deck.add(Card.ofCardEnum(CardEnum.spy));
     deck.add(Card.ofCardEnum(CardEnum.spy));
@@ -81,6 +84,9 @@ class Game {
   }
 
   void _initializeDeckDebug() {
+    // Clean the deck first
+    deck = [];
+    // Add custom cards
     deck.add(Card.ofCardEnum(CardEnum.chanceller));
     deck.add(Card.ofCardEnum(CardEnum.chanceller));
     deck.add(Card.ofCardEnum(CardEnum.guard));
