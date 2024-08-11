@@ -27,4 +27,13 @@ class AppStyle {
         child: const Text("OK",
             style: TextStyle(color: Colors.white, fontSize: 20)));
   }
+
+  static createConfirmText(final bool toDisplay) {
+    return Text(toDisplay ? "Touchez à nouveau pour confirmer" : "",
+        style: const TextStyle(color: Colors.deepPurple,
+            fontSize: 12,
+            fontStyle: FontStyle.italic),
+        textAlign: TextAlign.center
+    );
+  }
 }

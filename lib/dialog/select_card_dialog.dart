@@ -155,21 +155,8 @@ class SelectCardDialogState extends State<SelectCardDialog> {
         style: const TextStyle(color: Colors.deepPurple, fontSize: 20),
         textAlign: TextAlign.center
     ));
-    if (selectedCard != "") {
-      texts.add(const Text("Touchez à nouveau pour confirmer",
-          style: TextStyle(color: Colors.deepPurple,
-              fontSize: 12,
-              fontStyle: FontStyle.italic),
-          textAlign: TextAlign.center
-      ));
-    } else {
-      texts.add(const Text("",
-          style: TextStyle(color: Colors.deepPurple,
-              fontSize: 12,
-              fontStyle: FontStyle.italic),
-          textAlign: TextAlign.center
-      ));
-    }
+
+    texts.add(AppStyle.createConfirmText(selectedCard != ""));
 
     return texts;
   }

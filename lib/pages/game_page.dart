@@ -11,7 +11,7 @@ import '../model/player.dart';
 import '../orchestrator/orchestrator.dart';
 
 class GamePage extends StatelessWidget {
-  List<Player> players = [];
+  final List<Player> players = [];
 
   GamePage(List<Player> newPlayers, {super.key}) {
     // Copy the players list

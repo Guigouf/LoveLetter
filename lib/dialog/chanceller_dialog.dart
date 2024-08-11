@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:love_letter_flutter/pages/app_style.dart';
 
 import '../model/card.dart' as model;
 import '../model/game.dart';
@@ -33,10 +34,12 @@ class ChancellerDialogState extends State<ChancellerDialog> {
     String title = "";
     switch (state) {
       case ChancellerActionState.keepCard:
+      case ChancellerActionState.keepCardToConfirm:
         title = "Sélectionner la carte à garder";
         break;
       case ChancellerActionState.endDeckCard:
-        title = "Sélectionner la carte à mettre au bas du paquet";
+      case ChancellerActionState.endDeckCardToConfirm:
+        title = "Sélectionner la carte \nà mettre au bas du paquet";
         break;
     }
     return Dialog(
@@ -48,16 +51,17 @@ class ChancellerDialogState extends State<ChancellerDialog> {
           runAlignment: WrapAlignment.center,
           spacing: currentSize.height / 30,
           children: [
-            SizedBox(height: currentSize.height / 100),
+            const SizedBox(), // Apply the spacing on top
             Text(title,
-                style: const TextStyle(color: Colors.deepPurple, fontSize: 15, fontWeight: FontWeight.bold)),
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.deepPurple, fontSize: 20, fontWeight: FontWeight.bold)),
             Wrap(
                 alignment: WrapAlignment.center,
                 direction: Axis.horizontal,
                 spacing: currentSize.height / 50,
                 children: _buildCardWidgets(currentSize)
             ),
-            SizedBox(height: currentSize.height / 100)
+            AppStyle.createConfirmText(_isStateConfirm())
           ],
         ));
   }
@@ -82,6 +86,7 @@ class ChancellerDialogState extends State<ChancellerDialog> {
                 card.isSelected = false;
               }
               card.isSelected = true;
+              _confirmState();
 
             } else {
               _cardSelected(card);
@@ -100,7 +105,7 @@ class ChancellerDialogState extends State<ChancellerDialog> {
     // Unselect the card
     card.isSelected = false;
     switch (state) {
-      case ChancellerActionState.keepCard:
+      case ChancellerActionState.keepCardToConfirm:
         widget.cards.remove(card);
         widget.game.currentPlayer.cards.add(card);
 
@@ -112,7 +117,7 @@ class ChancellerDialogState extends State<ChancellerDialog> {
         }
         break;
 
-      case ChancellerActionState.endDeckCard:
+      case ChancellerActionState.endDeckCardToConfirm:
         // The card selected is the one to put last
         widget.cards.remove(card);
         if (widget.cards.isNotEmpty) { // 1 card remains
@@ -124,13 +129,27 @@ class ChancellerDialogState extends State<ChancellerDialog> {
         Navigator.pop(context, "OK");
         widget.orchestrator.endTurnOnState();
         break;
+      default: // keepCard and endDeckCard are not processed here
+        break;
     }
 
+  }
+
+  void _confirmState() {
+    if (state == ChancellerActionState.keepCard) {
+      state = ChancellerActionState.keepCardToConfirm;
+    } else if (state == ChancellerActionState.endDeckCard) {
+      state = ChancellerActionState.endDeckCardToConfirm;
+    }
+  }
+
+  bool _isStateConfirm() {
+    return state == ChancellerActionState.keepCardToConfirm || state == ChancellerActionState.endDeckCardToConfirm;
   }
 }
 
 
 
 enum ChancellerActionState {
-  keepCard, endDeckCard;
+  keepCard, keepCardToConfirm, endDeckCard, endDeckCardToConfirm;
 }
