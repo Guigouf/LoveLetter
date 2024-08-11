@@ -34,7 +34,7 @@ class ChancellerDialogState extends State<ChancellerDialog> {
     switch (state) {
       case ChancellerActionState.keepCard:
       case ChancellerActionState.keepCardToConfirm:
-        title = "Sélectionner la carte à garder";
+        title = "Sélectionner la carte \nà garder";
         break;
       case ChancellerActionState.endDeckCard:
       case ChancellerActionState.endDeckCardToConfirm:
@@ -69,7 +69,7 @@ class ChancellerDialogState extends State<ChancellerDialog> {
     double currentWidth = currentSize.width;
     List<Widget> cardWidgets = [];
     // Space at the left of the cards
-    cardWidgets.add(SizedBox(width: currentSize.height / 60));
+    cardWidgets.add(SizedBox());
     double sizeFactor = 3 / widget.cards.length;
     for (model.Card card in widget.cards) {
       double cardWidth = sizeFactor * (card.isSelected ? currentWidth / 4.9 : currentWidth / 5);
@@ -96,7 +96,7 @@ class ChancellerDialogState extends State<ChancellerDialog> {
       cardWidgets.add(cardWidget);
     }
     // Space at the right of the cards
-    cardWidgets.add(SizedBox(width: currentSize.height / 60));
+    cardWidgets.add(SizedBox());
     return cardWidgets;
   }
 
