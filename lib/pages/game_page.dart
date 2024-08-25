@@ -72,7 +72,7 @@ class GameWidgetState extends State<GameWidget> {
             runAlignment: WrapAlignment.center,
             children: [
               const SizedBox(height: 20),
-              const Text("Nouveau tour",
+              const Text("Au tour de",
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white)),
               const SizedBox(height: 10),
               Text(game.currentPlayer.name,

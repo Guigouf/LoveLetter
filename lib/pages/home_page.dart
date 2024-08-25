@@ -4,10 +4,6 @@ import 'package:love_letter_flutter/pages/game_page.dart';
 import 'app_bar.dart';
 import '../model/player.dart';
 
-void main() {
-  runApp(const HomePage());
-}
-
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -75,7 +71,7 @@ class HomeState extends State<HomePlayersAddition> {
                     backgroundColor: WidgetStatePropertyAll(Colors.deepPurple)),
                 child:
                 const Text(
-                    " Nouvelle Partie ",
+                    " Lancer la partie ",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12
