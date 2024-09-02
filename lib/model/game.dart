@@ -7,8 +7,8 @@ import 'card.dart';
 class Game {
   List<Player> allPlayers;
   late List<Player> allActivePlayers;
-  List<Card> deck = [];
-  late Card removedCard;
+  List<CardModel> deck = [];
+  late CardModel removedCard;
   late Player currentPlayer;
   bool gameEnded = false;
   GameState state = GameState.gameStarted;
@@ -40,41 +40,41 @@ class Game {
     deck = [];
 
     // 2 Espionnes
-    deck.add(Card.ofCardEnum(CardEnum.spy));
-    deck.add(Card.ofCardEnum(CardEnum.spy));
+    deck.add(CardModel.ofCardEnum(CardEnum.spy));
+    deck.add(CardModel.ofCardEnum(CardEnum.spy));
     // 6 Gardes
-    deck.add(Card.ofCardEnum(CardEnum.guard));
-    deck.add(Card.ofCardEnum(CardEnum.guard));
-    deck.add(Card.ofCardEnum(CardEnum.guard));
-    deck.add(Card.ofCardEnum(CardEnum.guard));
-    deck.add(Card.ofCardEnum(CardEnum.guard));
-    deck.add(Card.ofCardEnum(CardEnum.guard));
+    deck.add(CardModel.ofCardEnum(CardEnum.guard));
+    deck.add(CardModel.ofCardEnum(CardEnum.guard));
+    deck.add(CardModel.ofCardEnum(CardEnum.guard));
+    deck.add(CardModel.ofCardEnum(CardEnum.guard));
+    deck.add(CardModel.ofCardEnum(CardEnum.guard));
+    deck.add(CardModel.ofCardEnum(CardEnum.guard));
     // 2 Pretres
-    deck.add(Card.ofCardEnum(CardEnum.priest));
-    deck.add(Card.ofCardEnum(CardEnum.priest));
+    deck.add(CardModel.ofCardEnum(CardEnum.priest));
+    deck.add(CardModel.ofCardEnum(CardEnum.priest));
     // 2 Barons
-    deck.add(Card.ofCardEnum(CardEnum.baron));
-    deck.add(Card.ofCardEnum(CardEnum.baron));
+    deck.add(CardModel.ofCardEnum(CardEnum.baron));
+    deck.add(CardModel.ofCardEnum(CardEnum.baron));
     // 2 Servantes
-    deck.add(Card.ofCardEnum(CardEnum.handmaid));
-    deck.add(Card.ofCardEnum(CardEnum.handmaid));
+    deck.add(CardModel.ofCardEnum(CardEnum.handmaid));
+    deck.add(CardModel.ofCardEnum(CardEnum.handmaid));
     // 2 Princes
-    deck.add(Card.ofCardEnum(CardEnum.prince));
-    deck.add(Card.ofCardEnum(CardEnum.prince));
+    deck.add(CardModel.ofCardEnum(CardEnum.prince));
+    deck.add(CardModel.ofCardEnum(CardEnum.prince));
     // 2 Chanceliers
-    deck.add(Card.ofCardEnum(CardEnum.chanceller));
-    deck.add(Card.ofCardEnum(CardEnum.chanceller));
+    deck.add(CardModel.ofCardEnum(CardEnum.chanceller));
+    deck.add(CardModel.ofCardEnum(CardEnum.chanceller));
     // 1 Roi
-    deck.add(Card.ofCardEnum(CardEnum.king));
+    deck.add(CardModel.ofCardEnum(CardEnum.king));
     // 1 Comtesse
-    deck.add(Card.ofCardEnum(CardEnum.comtess));
+    deck.add(CardModel.ofCardEnum(CardEnum.comtess));
     //1 Princesse
-    deck.add(Card.ofCardEnum(CardEnum.princess));
+    deck.add(CardModel.ofCardEnum(CardEnum.princess));
 
     // Shuffle
     for (int round = 0; round < 200; round++) {
       int position = Random().nextInt(deck.length);
-      Card removedCard = deck.elementAt(position);
+      CardModel removedCard = deck.elementAt(position);
       deck.removeAt(position);
       deck.add(removedCard);
     }
@@ -87,13 +87,13 @@ class Game {
     // Clean the deck first
     deck = [];
     // Add custom cards
-    deck.add(Card.ofCardEnum(CardEnum.chanceller));
-    deck.add(Card.ofCardEnum(CardEnum.chanceller));
-    deck.add(Card.ofCardEnum(CardEnum.guard));
-    deck.add(Card.ofCardEnum(CardEnum.priest));
-    deck.add(Card.ofCardEnum(CardEnum.baron));
-    deck.add(Card.ofCardEnum(CardEnum.handmaid));
-    deck.add(Card.ofCardEnum(CardEnum.princess));
+    deck.add(CardModel.ofCardEnum(CardEnum.chanceller));
+    deck.add(CardModel.ofCardEnum(CardEnum.chanceller));
+    deck.add(CardModel.ofCardEnum(CardEnum.guard));
+    deck.add(CardModel.ofCardEnum(CardEnum.priest));
+    deck.add(CardModel.ofCardEnum(CardEnum.baron));
+    deck.add(CardModel.ofCardEnum(CardEnum.handmaid));
+    deck.add(CardModel.ofCardEnum(CardEnum.princess));
   }
 
   void _cardDistribution() {
@@ -169,7 +169,7 @@ class Game {
     return winner;
   }
 
-  bool isCardGuessedRight(Card card, Player targetPlayer) {
+  bool isCardGuessedRight(CardModel card, Player targetPlayer) {
     return card.value == targetPlayer.cards.first.value;
   }
 
@@ -188,6 +188,10 @@ class Game {
     if (deck.isNotEmpty) {
       selectedPlayer.cards.add(deck.removeAt(0));
     }
+  }
+
+  void endGame() {
+    state = GameState.gameEnded;
   }
 }
 

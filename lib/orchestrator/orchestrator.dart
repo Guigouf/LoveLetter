@@ -14,7 +14,7 @@ class Orchestrator {
   }
 
   // Play card from the current player
-  void playCard(Card card) {
+  void playCard(CardModel card) {
     card.isSelected = false;
     // Reset handmaid played if any
     game.currentPlayer.handmaidPlayed = false;
@@ -56,7 +56,7 @@ class Orchestrator {
   bool _comtessShallBePlayed() {
     bool hasComtess = false;
     bool hasPrinceOrKing = false;
-    for(Card card in game.currentPlayer.cards) {
+    for(CardModel card in game.currentPlayer.cards) {
       hasComtess |= (card.value == 8);
       hasPrinceOrKing |= ((card.value == 5) || card.value == 7);
     }
@@ -67,11 +67,12 @@ class Orchestrator {
     if(!game.isOver()) {
       game.newTurn();
     } else {
+      game.endGame();
       widgetState.endGame();
     }
   }
 
-  void playerSelected(Player selectedPlayer, Card playedCard) {
+  void playerSelected(Player selectedPlayer, CardModel playedCard) {
     switch(playedCard.value) {
       case 1:
         widgetState.playGuard(selectedPlayer);

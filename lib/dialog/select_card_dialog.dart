@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:love_letter_flutter/pages/card_widget.dart';
 
 import '../model/card.dart' as model;
 import '../model/card.dart';
@@ -12,18 +13,18 @@ class SelectCardDialog extends StatefulWidget {
   final Orchestrator orchestrator;
   final Player targetPlayer;
   final Game game;
-  final List<model.Card> cards = [];
+  final List<model.CardModel> cards = [];
 
   SelectCardDialog(this.orchestrator, this.targetPlayer, this.game, {super.key}) {
-    cards.add(model.Card.ofCardEnum(CardEnum.spy));
-    cards.add(model.Card.ofCardEnum(CardEnum.priest));
-    cards.add(model.Card.ofCardEnum(CardEnum.baron));
-    cards.add(model.Card.ofCardEnum(CardEnum.handmaid));
-    cards.add(model.Card.ofCardEnum(CardEnum.prince));
-    cards.add(model.Card.ofCardEnum(CardEnum.chanceller));
-    cards.add(model.Card.ofCardEnum(CardEnum.king));
-    cards.add(model.Card.ofCardEnum(CardEnum.comtess));
-    cards.add(model.Card.ofCardEnum(CardEnum.princess));
+    cards.add(model.CardModel.ofCardEnum(CardEnum.spy));
+    cards.add(model.CardModel.ofCardEnum(CardEnum.priest));
+    cards.add(model.CardModel.ofCardEnum(CardEnum.baron));
+    cards.add(model.CardModel.ofCardEnum(CardEnum.handmaid));
+    cards.add(model.CardModel.ofCardEnum(CardEnum.prince));
+    cards.add(model.CardModel.ofCardEnum(CardEnum.chanceller));
+    cards.add(model.CardModel.ofCardEnum(CardEnum.king));
+    cards.add(model.CardModel.ofCardEnum(CardEnum.comtess));
+    cards.add(model.CardModel.ofCardEnum(CardEnum.princess));
   }
 
 
@@ -75,41 +76,37 @@ class SelectCardDialogState extends State<SelectCardDialog> {
       rowWidgets.add(const SizedBox(width: 5));
 
       for(int j = 0; j <= 2; j++) {
-        model.Card card = widget.cards[i + j];
+        model.CardModel card = widget.cards[i + j];
         double cardWidth = card.isSelected ? currentWidth / 4.9 : currentWidth / 5;
-        Widget cardWidget = InkWell(
-          child: Image(
-              image: AssetImage(card.getImagePath()),
-              width: cardWidth
-          ),
-          onTap: () {
-            setState(() {
-              if (!card.isSelected) {
-                for (model.Card card in widget.cards) {
-                  card.isSelected = false;
-                }
-                card.isSelected = true;
-                selectedCard = card.name;
+
+        Widget cardWidget = CardWidget(card, cardWidth, widget.game, widget.orchestrator, () {
+          setState(() {
+            if (!card.isSelected) {
+              for (model.CardModel card in widget.cards) {
+                card.isSelected = false;
+              }
+              card.isSelected = true;
+              selectedCard = card.name;
+            } else {
+              Navigator.pop(context);
+              bool isCardGuessRight = widget.game.isCardGuessedRight(
+                  card, widget.targetPlayer);
+              String title = "";
+              String content = "";
+
+              if (isCardGuessRight) {
+                title = "Bon choix !";
+                content =
+                "Le joueur ${widget.targetPlayer.name} a bien la carte ${card
+                    .name} ! \n${widget.targetPlayer.name} est éliminé(e) !";
               } else {
-                Navigator.pop(context);
-                bool isCardGuessRight = widget.game.isCardGuessedRight(
-                    card, widget.targetPlayer);
-                String title = "";
-                String content = "";
+                title = "Mauvais choix !";
+                content =
+                "Le joueur ${widget.targetPlayer.name} n'a pas la carte ${card
+                    .name} ! \n${widget.targetPlayer.name} reste en jeu !";
+              }
 
-                if (isCardGuessRight) {
-                  title = "Bon choix !";
-                  content =
-                  "Le joueur ${widget.targetPlayer.name} a bien la carte ${card
-                      .name} ! \n${widget.targetPlayer.name} est éliminé(e) !";
-                } else {
-                  title = "Mauvais choix !";
-                  content =
-                  "Le joueur ${widget.targetPlayer.name} n'a pas la carte ${card
-                      .name} ! \n${widget.targetPlayer.name} reste en jeu !";
-                }
-
-                showDialog(
+              showDialog(
                   barrierDismissible: false,
                   context: context,
                   builder: (context) =>
@@ -122,16 +119,16 @@ class SelectCardDialogState extends State<SelectCardDialog> {
                             color: Colors.white)),
                         actions: [
                           AppStyle.createOkButton(() {
-                          Navigator.pop(context, "OK");
-                          widget.orchestrator.cardGuessed(widget.targetPlayer, isCardGuessRight);
+                            Navigator.pop(context, "OK");
+                            widget.orchestrator.cardGuessed(widget.targetPlayer, isCardGuessRight);
                           })
                         ],
                       )
-                );
-              }
-            });
-          },
-        );
+              );
+            }
+          });
+        });
+
         rowWidgets.add(cardWidget);
       }
       // Add space on the right

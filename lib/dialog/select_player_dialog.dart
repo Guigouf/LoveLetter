@@ -7,7 +7,7 @@ import '../model/player.dart';
 import '../pages/app_style.dart';
 
 class SelectPlayerWidget extends StatefulWidget {
-  final model.Card playedCard;
+  final model.CardModel playedCard;
   final Orchestrator orchestrator;
   final List<PlayerToSelect> selectablePlayers = [];
 

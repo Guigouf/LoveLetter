@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:love_letter_flutter/dialog/select_card_dialog.dart';
 import 'package:love_letter_flutter/model/card.dart' as model;
 import 'package:love_letter_flutter/pages/app_bar.dart';
 import 'package:love_letter_flutter/pages/app_style.dart';
+import 'package:love_letter_flutter/pages/card_widget.dart';
 
 import '../dialog/chanceller_dialog.dart';
 import '../dialog/select_player_dialog.dart';
@@ -87,6 +89,7 @@ class GameWidgetState extends State<GameWidget> {
         backgroundColor: Colors.amber,
         body: Column(
           children: [
+            Text(game.currentPlayer.name, style: TextStyle(color: Colors.purple, fontSize: 20)),
             Column(children: buildPlayersWidget(currentWidth)),
             Expanded(
                 child: Align(
@@ -126,7 +129,7 @@ class GameWidgetState extends State<GameWidget> {
 
       // Create the row for to display the selected play cards
       if (player.isSelected) {
-        for (model.Card card in player.playedCards) {
+        for (model.CardModel card in player.playedCards) {
           selectedPlayerCards
               .add(Image(image: AssetImage(card.getImagePath()), width: currentWidth / 8));
           selectedPlayerCards.add(SizedBox(width: currentWidth / 20));
@@ -150,20 +153,18 @@ class GameWidgetState extends State<GameWidget> {
     Wrap wrapRow = const Wrap();
     if (!game.gameEnded) {
       List<Widget> cardsToPlay = [];
-      for (model.Card card in game.getCurrentPlayer().cards) {
+      for (model.CardModel card in game.getCurrentPlayer().cards) {
         double cardWidth = card.isSelected ? currentWidth / 2.9 : currentWidth / 3;
-        Image imageCard = Image(image: AssetImage(card.getImagePath()), width: cardWidth);
-        cardsToPlay.add(InkWell(
-          child: imageCard,
-          onTap: () {
-            setState(() {
-              if (!card.isSelected) {
-                game.getCurrentPlayer().selectCard(card);
-              } else {
-                orchestrator.playCard(card);
-              }
-            });
-          },
+
+        cardsToPlay.add(CardWidget(card, cardWidth, game, orchestrator, () {
+          setState(() {
+            if (!card.isSelected) {
+              game.getCurrentPlayer().selectCard(card);
+            } else {
+              orchestrator.playCard(card);
+            }
+          });
+        }
         ));
       }
 
@@ -213,7 +214,7 @@ class GameWidgetState extends State<GameWidget> {
             ));
   }
 
-  void selectPlayerForCard(model.Card card) {
+  void selectPlayerForCard(model.CardModel card) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -253,8 +254,8 @@ class GameWidgetState extends State<GameWidget> {
   }
 
   void playBaron(Player selectedPlayer) {
-    final model.Card currentPlayerCard = game.currentPlayer.cards.first;
-    final model.Card selectedPlayerCard = selectedPlayer.cards.first;
+    final model.CardModel currentPlayerCard = game.currentPlayer.cards.first;
+    final model.CardModel selectedPlayerCard = selectedPlayer.cards.first;
     String title = "";
     String description = "";
     Player loser = Player.nobody;
@@ -342,8 +343,8 @@ class GameWidgetState extends State<GameWidget> {
 
   void playKing(Player selectedPlayer) {
     // Switch the cards
-    final model.Card currentPlayerCard = game.currentPlayer.cards.removeAt(0);
-    final model.Card selectedPlayerCard = selectedPlayer.cards.removeAt(0);
+    final model.CardModel currentPlayerCard = game.currentPlayer.cards.removeAt(0);
+    final model.CardModel selectedPlayerCard = selectedPlayer.cards.removeAt(0);
 
     game.currentPlayer.cards.add(selectedPlayerCard);
     selectedPlayer.cards.add(currentPlayerCard);

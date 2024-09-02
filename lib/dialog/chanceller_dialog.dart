@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:love_letter_flutter/pages/app_style.dart';
+import 'package:love_letter_flutter/pages/card_widget.dart';
 
 import '../model/card.dart' as model;
 import '../model/game.dart';
@@ -9,7 +10,7 @@ import '../orchestrator/orchestrator.dart';
 class ChancellerDialog extends StatefulWidget {
   final Orchestrator orchestrator;
   final Game game;
-  final List<model.Card> cards = [];
+  final List<model.CardModel> cards = [];
 
   ChancellerDialog(this.orchestrator, this.game, {super.key}) {
     // Retrieve the player cards
@@ -70,28 +71,22 @@ class ChancellerDialogState extends State<ChancellerDialog> {
     // Space at the left of the cards
     cardWidgets.add(SizedBox());
     double sizeFactor = 3 / widget.cards.length;
-    for (model.Card card in widget.cards) {
+    for (model.CardModel card in widget.cards) {
       double cardWidth = sizeFactor * (card.isSelected ? currentWidth / 4.9 : currentWidth / 5);
-      Widget cardWidget = InkWell(
-        child: Image(
-            image: AssetImage(card.getImagePath()),
-            width: cardWidth
-        ),
-        onTap: () {
-          setState(() {
-            if (!card.isSelected) {
-              for (model.Card card in widget.cards) {
-                card.isSelected = false;
-              }
-              card.isSelected = true;
-              _confirmState();
-
-            } else {
-              _cardSelected(card);
+      CardWidget cardWidget = CardWidget(card, cardWidth, widget.game, widget.orchestrator, () {
+        setState(() {
+          if (!card.isSelected) {
+            for (model.CardModel card in widget.cards) {
+              card.isSelected = false;
             }
-          });
-        },
-      );
+            card.isSelected = true;
+            _confirmState();
+
+          } else {
+            _cardSelected(card);
+          }
+        });
+      });
       cardWidgets.add(cardWidget);
     }
     // Space at the right of the cards
@@ -99,7 +94,7 @@ class ChancellerDialogState extends State<ChancellerDialog> {
     return cardWidgets;
   }
 
-  void _cardSelected(model.Card card) {
+  void _cardSelected(model.CardModel card) {
     // Unselect the card
     card.isSelected = false;
     switch (state) {
@@ -119,7 +114,7 @@ class ChancellerDialogState extends State<ChancellerDialog> {
         // The card selected is the one to put last
         widget.cards.remove(card);
         if (widget.cards.isNotEmpty) { // 1 card remains
-          final model.Card otherCard = widget.cards.first;
+          final model.CardModel otherCard = widget.cards.first;
           widget.game.deck.add(otherCard);
         }
         // Add the selected card at last position

@@ -7,23 +7,23 @@ class Player {
   String name ="";
   bool spyPlayed = false;
   bool handmaidPlayed = false;
-  List<Card> cards = [];
-  List<Card> playedCards = [];
+  List<CardModel> cards = [];
+  List<CardModel> playedCards = [];
   bool isSelected = false;
 
   Player(this.name);
 
-  void addCard(Card card) {
+  void addCard(CardModel card) {
     cards.add(card);
   }
 
-  void playCard(Card card) {
+  void playCard(CardModel card) {
     cards.remove(card);
     playedCards.add(card);
   }
 
-  void selectCard(Card card) {
-    for (Card card in cards) {
+  void selectCard(CardModel card) {
+    for (CardModel card in cards) {
       card.isSelected = false;
     }
     card.isSelected = true;
